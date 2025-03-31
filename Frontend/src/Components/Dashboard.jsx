@@ -30,17 +30,17 @@ const Dashboard = () => {
   const [connections, setConnections] = useState([
     {
       id: 1,
-      name: "Sarah Parker",
+      name: "Vitesh ",
       interests: ["photography", "travel"],
       avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
     },
     {
-      id: 2,
-      name: "Mike Johnson",
+      id: 1,
+      name: "Balaji",
       interests: ["hiking", "photography"],
       avatar:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
     },
   ]);
 
@@ -68,7 +68,7 @@ const Dashboard = () => {
               >
                 <img
                   className="h-8 w-8 rounded-full"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32"
+                  src="https://wallpapers.com/images/hd/vector-cartoon-ms-dhoni-hd-575intsd0dxp6iwi.jpg"
                   alt="Profile"
                 />
               </Link>

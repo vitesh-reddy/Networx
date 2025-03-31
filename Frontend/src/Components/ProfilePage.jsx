@@ -4,15 +4,15 @@ import { ArrowLeft, Camera } from 'lucide-react';
 
 const ProfilePage = () => {
   const [profile, setProfile] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    userName: 'johndoe',
+    firstName: 'Mahendra Singh',
+    lastName: 'Dhoni',
+    userName: 'msd_07',
     gender: 'male',
-    age: '28',
-    email: 'john@example.com',
+    age: '43',
+    email: 'mahendra@gmail.com',
     locality: 'urban',
-    interests: 'photography, hiking, travel',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150'
+    interests: 'cricket, football, riding',
+    avatar: 'https://wallpapers.com/images/hd/vector-cartoon-ms-dhoni-hd-575intsd0dxp6iwi.jpg'
   });
 
   const [isEditing, setIsEditing] = useState(false);

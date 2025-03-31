@@ -1,12 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LandingPage from "./pages/LandingPage";
-import SignUpPage from "./pages/SignUpPage";
-import LoginPage from "./pages/LoginPage";
-import Dashboard from "./pages/Dashboard";
-import ChatPage from "./pages/ChatPage";
-import ProfilePage from "./pages/ProfilePage";
-import CreateEventPage from "./pages/CreateEventPage";
+import LandingPage from "./Components/LandingPage";
+import SignUpPage from "./Components/SignUpPage";
+import LoginPage from "./Components/LoginPage";
+import Dashboard from "./Components/Dashboard";
+import ChatPage from "./Components/ChatPage";
+import ProfilePage from "./Components/ProfilePage";
+import CreateEventPage from "./Components/CreateEventPage";
 
 function App() {
   return (

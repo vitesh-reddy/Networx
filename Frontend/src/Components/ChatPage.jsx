@@ -1,26 +1,59 @@
-import React, { useState } from 'react';
-import { Search, Users, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Search, Users, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 const ChatPage = () => {
-  const [activeTab, setActiveTab] = useState('individual');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState("individual");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const contacts = [
     {
       id: 1,
-      name: 'Sarah Parker',
-      lastMessage: 'Looking forward to the photography meetup!',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
-      time: '2m ago'
+      name: "Muktha",
+      lastMessage: "Hello! How are you?",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
+      time: "Just Now",
     },
     {
       id: 2,
-      name: 'Photography Group',
-      lastMessage: 'New event scheduled for next week',
-      avatar: 'https://images.unsplash.com/photo-1554080353-321e452ccf19?w=150',
-      time: '1h ago',
-      isGroup: true
-    }
+      name: "Meghana",
+      lastMessage: "Thank you",
+      avatar:
+        "https://images.unsplash.com/placeholder-avatars/extra-large.jpg?w=150&dpr=2&crop=faces&bg=%23fff&h=150&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      time: "2m ago",
+    },
+    {
+      id: 3,
+      name: "Balaji",
+      lastMessage: "Let's meet tomorrow",
+      avatar:
+        "https://images.unsplash.com/placeholder-avatars/extra-large.jpg?w=150&dpr=2&crop=faces&bg=%23fff&h=150&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      time: "40m ago",
+    },
+    {
+      id: 4,
+      name: "Vitesh",
+      lastMessage: "Well Done Bro",
+      avatar:
+        "https://images.unsplash.com/placeholder-avatars/extra-large.jpg?w=150&dpr=2&crop=faces&bg=%23fff&h=150&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      time: "2h ago",
+    },
+    {
+      id: 5,
+      name: "Photography Group",
+      lastMessage: "New event scheduled for next week",
+      avatar: "https://images.unsplash.com/photo-1554080353-321e452ccf19?w=150",
+      time: "1h ago",
+      isGroup: true,
+    },
+    {
+      id: 6,
+      name: "Arts Group", 
+      lastMessage: "New event scheduled for next week",
+      avatar: "https://images.unsplash.com/photo-1554080353-321e452ccf19?w=150",
+      time: "1h ago",
+      isGroup: true,
+    },
   ];
 
   return (
@@ -31,7 +64,10 @@ const ChatPage = () => {
           <div className="col-span-1 border-r">
             <div className="p-4 border-b">
               <div className="flex items-center justify-between mb-4">
-                <Link to="/dashboard" className="text-gray-600 hover:text-purple-600">
+                <Link
+                  to="/dashboard"
+                  className="text-gray-600 hover:text-purple-600"
+                >
                   <ArrowLeft className="h-6 w-6" />
                 </Link>
                 <h2 className="text-xl font-semibold">Messages</h2>
@@ -54,21 +90,21 @@ const ChatPage = () => {
             <div className="flex border-b">
               <button
                 className={`flex-1 py-3 text-center ${
-                  activeTab === 'individual'
-                    ? 'text-purple-600 border-b-2 border-purple-600'
-                    : 'text-gray-600'
+                  activeTab === "individual"
+                    ? "text-purple-600 border-b-2 border-purple-600"
+                    : "text-gray-600"
                 }`}
-                onClick={() => setActiveTab('individual')}
+                onClick={() => setActiveTab("individual")}
               >
                 Individual
               </button>
               <button
                 className={`flex-1 py-3 text-center ${
-                  activeTab === 'groups'
-                    ? 'text-purple-600 border-b-2 border-purple-600'
-                    : 'text-gray-600'
+                  activeTab === "groups"
+                    ? "text-purple-600 border-b-2 border-purple-600"
+                    : "text-gray-600"
                 }`}
-                onClick={() => setActiveTab('groups')}
+                onClick={() => setActiveTab("groups")}
               >
                 Groups
               </button>
@@ -76,12 +112,10 @@ const ChatPage = () => {
 
             <div className="overflow-y-auto h-[calc(100vh-200px)]">
               {contacts
-                .filter(contact =>
-                  activeTab === 'groups'
-                    ? contact.isGroup
-                    : !contact.isGroup
+                .filter((contact) =>
+                  activeTab === "groups" ? contact.isGroup : !contact.isGroup
                 )
-                .map(contact => (
+                .map((contact) => (
                   <div
                     key={contact.id}
                     className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
@@ -94,7 +128,9 @@ const ChatPage = () => {
                     <div className="ml-4 flex-1">
                       <div className="flex justify-between">
                         <h3 className="font-medium">{contact.name}</h3>
-                        <span className="text-sm text-gray-500">{contact.time}</span>
+                        <span className="text-sm text-gray-500">
+                          {contact.time}
+                        </span>
                       </div>
                       <p className="text-sm text-gray-500 truncate">
                         {contact.lastMessage}
@@ -104,7 +140,7 @@ const ChatPage = () => {
                 ))}
             </div>
 
-            {activeTab === 'groups' && (
+            {activeTab === "groups" && (
               <div className="p-4 border-t">
                 <button className="w-full py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
                   Create New Group
