@@ -5,14 +5,20 @@ const morgan = require("morgan");
 const { userRouter } = require("./routes/userRoutes");
 const { chatRouter } = require("./routes/chatRoutes");
 
+console.clear();
 dotenv.config();
 
+const REACT_BASE_URI = process.env.REACT_BASE_URI;
+const cors = require("cors");
+const corsOptions = { origin: [REACT_BASE_URI] };
+
 const app = express();
+app.use(cors(corsOptions));
 app.use(morgan("dev"));
 app.use(express.json());
 
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.VITESH_MONGO_URI)
   .then(() => {
     console.log("Connected to MongoDB");
   })
