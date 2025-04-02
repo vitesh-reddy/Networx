@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import {
   MessageSquare,
   Bell,
@@ -27,22 +28,21 @@ const Dashboard = () => {
     },
   ]);
 
-  const [connections, setConnections] = useState([
-    {
-      id: 1,
-      name: "Vitesh ",
-      interests: ["photography", "travel"],
-      avatar:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
-    },
-    {
-      id: 1,
-      name: "Balaji",
-      interests: ["hiking", "photography"],
-      avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
-    },
-  ]);
+  const [connections, setConnections] = useState([]);
+
+  const fetchAllUsers = async () => {
+    try {
+      const connections = await axios.get("http://localhost:3000/api/user/");
+      console.log(connections);
+      setConnections(connections);
+    } catch (error) {
+      console.log("Failed to Fetch Users Data");
+    }
+  };
+
+  useEffect(() => {
+    fetchAllUsers();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100">
