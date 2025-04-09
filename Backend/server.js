@@ -18,7 +18,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 mongoose
-  .connect(process.env.VITESH_MONGO_URI)
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("Connected to MongoDB");
   })

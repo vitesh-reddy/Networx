@@ -28,15 +28,39 @@ const Dashboard = () => {
     },
   ]);
 
-  const [connections, setConnections] = useState([]);
+  const [connections, setConnections] = useState([
+    {
+      id: 1,
+      name: "Vitesh",
+      interests: ["photography", "travel"],
+      avatar:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
+    },
+    {
+      id: 2,
+      name: "Balaji",
+      interests: ["hiking", "photography"],
+      avatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
+    },
+  ]);
 
   const fetchAllUsers = async () => {
+    const token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2YxNzNiYjc2NWFlOWMyYzRhNjZjMmMiLCJpYXQiOjE3NDM4NzcwNTEsImV4cCI6MTc0Mzk2MzQ1MX0.RsAaGYtzMaIJB0dDof6Nfd4udNN4vQDakQLcQjxgQDs";
     try {
-      const connections = await axios.get("http://localhost:3000/api/user/");
-      console.log(connections);
-      setConnections(connections);
-    } catch (error) {
+      const res = await axios.get("http://localhost:3000/api/user/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+      });
+
+      console.log(res.data);
+      setConnections((p) => [...p, res.data]);
+    } catch (e) {
       console.log("Failed to Fetch Users Data");
+      console.log(e.message, "\n", e);
     }
   };
 
