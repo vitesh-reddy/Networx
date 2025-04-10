@@ -34,3 +34,13 @@ app.use("/api/chat", chatRouter);
 const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+
+/*
+
+authentication
+user schema update  
+events collection
+chat implementation (individual and group)
+
+*/
