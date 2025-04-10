@@ -24,7 +24,6 @@ const CreateEventPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle event creation logic here
     console.log('Event Data:', eventData);
   };
 
@@ -32,7 +31,7 @@ const CreateEventPage = () => {
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center">
-          <Link to="/dashboard" className="text-gray-600 hover:text-purple-600">
+          <Link to="/dashboard" className="text-gray-600 hover:text-indigo-600">
             <ArrowLeft className="h-6 w-6" />
           </Link>
           <h1 className="ml-4 text-2xl font-bold text-gray-900">Create New Event</h1>
@@ -50,7 +49,7 @@ const CreateEventPage = () => {
                   name="title"
                   value={eventData.title}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   required
                   placeholder="Give your event a catchy title"
                 />
@@ -65,7 +64,7 @@ const CreateEventPage = () => {
                   value={eventData.description}
                   onChange={handleChange}
                   rows={4}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   required
                   placeholder="Describe what your event is about"
                 />
@@ -83,7 +82,7 @@ const CreateEventPage = () => {
                       name="date"
                       value={eventData.date}
                       onChange={handleChange}
-                      className="mt-1 block w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                      className="mt-1 block w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                       required
                     />
                   </div>
@@ -100,7 +99,7 @@ const CreateEventPage = () => {
                       name="time"
                       value={eventData.time}
                       onChange={handleChange}
-                      className="mt-1 block w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                      className="mt-1 block w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                       required
                     />
                   </div>
@@ -118,7 +117,7 @@ const CreateEventPage = () => {
                     name="location"
                     value={eventData.location}
                     onChange={handleChange}
-                    className="mt-1 block w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                    className="mt-1 block w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                     required
                     placeholder="Enter event location"
                   />
@@ -138,7 +137,7 @@ const CreateEventPage = () => {
                       value={eventData.maxParticipants}
                       onChange={handleChange}
                       min="1"
-                      className="mt-1 block w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                      className="mt-1 block w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                       required
                       placeholder="Enter max participants"
                     />
@@ -153,7 +152,7 @@ const CreateEventPage = () => {
                     name="type"
                     value={eventData.type}
                     onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                     required
                   >
                     <option value="in-person">In Person</option>
@@ -172,7 +171,7 @@ const CreateEventPage = () => {
                   name="interests"
                   value={eventData.interests}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   required
                   placeholder="Enter comma-separated interests (e.g., photography, hiking)"
                 />
@@ -187,7 +186,7 @@ const CreateEventPage = () => {
                 </Link>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
                 >
                   Create Event
                 </button>

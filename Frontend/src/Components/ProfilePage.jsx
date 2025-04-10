@@ -28,7 +28,6 @@ const ProfilePage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsEditing(false);
-    // Handle profile update logic here
     console.log('Updated profile:', profile);
   };
 
@@ -36,14 +35,14 @@ const ProfilePage = () => {
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center">
-          <Link to="/dashboard" className="text-gray-600 hover:text-purple-600">
+          <Link to="/dashboard" className="text-gray-600 hover:text-indigo-600">
             <ArrowLeft className="h-6 w-6" />
           </Link>
           <h1 className="ml-4 text-2xl font-bold text-gray-900">Profile Settings</h1>
         </div>
 
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="relative h-48 bg-purple-600">
+          <div className="relative h-48 bg-indigo-600">
             <div className="absolute -bottom-12 left-8">
               <div className="relative">
                 <img
@@ -51,7 +50,7 @@ const ProfilePage = () => {
                   alt="Profile"
                   className="h-24 w-24 rounded-full border-4 border-white"
                 />
-                <button className="absolute bottom-0 right-0 p-1 bg-purple-600 rounded-full text-white hover:bg-purple-700">
+                <button className="absolute bottom-0 right-0 p-1 bg-indigo-600 rounded-full text-white hover:bg-indigo-700">
                   <Camera className="h-5 w-5" />
                 </button>
               </div>
@@ -71,7 +70,7 @@ const ProfilePage = () => {
                     value={profile.firstName}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                 </div>
 
@@ -85,7 +84,7 @@ const ProfilePage = () => {
                     value={profile.lastName}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                 </div>
 
@@ -99,7 +98,7 @@ const ProfilePage = () => {
                     value={profile.userName}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                 </div>
 
@@ -113,7 +112,7 @@ const ProfilePage = () => {
                     value={profile.email}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                 </div>
 
@@ -127,7 +126,7 @@ const ProfilePage = () => {
                     value={profile.age}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                 </div>
 
@@ -140,7 +139,7 @@ const ProfilePage = () => {
                     value={profile.gender}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   >
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -157,7 +156,7 @@ const ProfilePage = () => {
                     value={profile.locality}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   >
                     <option value="rural">Rural</option>
                     <option value="urban">Urban</option>
@@ -176,7 +175,7 @@ const ProfilePage = () => {
                     onChange={handleChange}
                     disabled={!isEditing}
                     placeholder="Enter comma-separated interests"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                 </div>
               </div>
@@ -193,7 +192,7 @@ const ProfilePage = () => {
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                      className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
                     >
                       Save Changes
                     </button>
@@ -202,7 +201,7 @@ const ProfilePage = () => {
                   <button
                     type="button"
                     onClick={() => setIsEditing(true)}
-                    className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
                   >
                     Edit Profile
                   </button>
