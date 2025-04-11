@@ -19,6 +19,7 @@ const register = async (req, res) => {
     } = req.body;
 
     const interestsArray = interests?.split(",");
+    console.clear();
     console.log("interestsArray", interestsArray);
     // Check if user already exists
     let user = await User.findOne({ email });
