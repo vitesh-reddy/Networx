@@ -3,10 +3,23 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
+  console.log("Registering user", req.body);
   try {
-    const { name, email, password, interests } = req.body;
-    const interestsArray = interests?.split(",");
+    const {
+      firstName,
+      lastName,
+      userName,
+      gender,
+      age,
+      email,
+      locality,
+      avatar,
+      password,
+      interests,
+    } = req.body;
 
+    const interestsArray = interests?.split(",");
+    console.log("interestsArray", interestsArray);
     // Check if user already exists
     let user = await User.findOne({ email });
     if (user) {
@@ -18,30 +31,46 @@ const register = async (req, res) => {
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Create new user
-    user = new User({
-      name,
+  console.log("hashing done");
+  // Create new user
+  user = new User({
+    firstName,
+      lastName,
+      userName,
+      gender,
+      age,
       email,
+      locality,
+      avatar,
       password: hashedPassword,
-      interestsArray,
+      interests: interestsArray,
     });
-
-    await user.save();
-
+    
+    console.log("saving...");
+    const ress = await user.save();
+    console.log(ress);
+    
     // Create JWT token
     const token = jwt.sign(
-      { userId: user._id },
+      { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
-
+    console.log("token genre...");
+    
     res.status(201).json({
       token,
       user: {
         id: user._id,
-        name: user.name,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        userName: user.userName,
+        gender: user.gender,
+        age: user.age,
         email: user.email,
+        locality: user.locality,
+        avatar: user.avatar,
+        role: user.role,
         interests: user.interests,
       },
     });
@@ -61,7 +90,7 @@ const login = async (req, res) => {
     if (!user) {
       return res
         .status(400)
-        .json({ message: "Invalid credentials" });
+        .json({ message: "User with Email not Found!" });
     }
 
     // Verify password
@@ -72,12 +101,12 @@ const login = async (req, res) => {
     if (!isMatch) {
       return res
         .status(400)
-        .json({ message: "Invalid credentials" });
+        .json({ message: "Invalid Password" });
     }
 
     // Create JWT token
     const token = jwt.sign(
-      { userId: user._id },
+      { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
@@ -86,9 +115,18 @@ const login = async (req, res) => {
       token,
       user: {
         id: user._id,
-        name: user.name,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        userName: user.userName,
+        gender: user.gender,
+        age: user.age,
         email: user.email,
+        locality: user.locality,
+        avatar: user.avatar,
+        role: user.role,
         interests: user.interests,
+        attendedEvents: user.attendedEvents,
+        chats: user.chats,
       },
     });
   } catch (error) {
@@ -127,7 +165,17 @@ const getUserById = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const { name, email, interests } = req.body;
+    const {
+      firstName,
+      lastName,
+      userName,
+      gender,
+      age,
+      email,
+      locality,
+      avatar,
+      interests,
+    } = req.body;
 
     // Check if user exists
     let user = await User.findById(req.params.id);
@@ -143,8 +191,14 @@ const updateUser = async (req, res) => {
     }
 
     // Update user fields
-    user.name = name || user.name;
+    user.firstName = firstName || user.firstName;
+    user.lastName = lastName || user.lastName;
+    user.userName = userName || user.userName;
+    user.gender = gender || user.gender;
+    user.age = age || user.age;
     user.email = email || user.email;
+    user.locality = locality || user.locality;
+    user.avatar = avatar || user.avatar;
     user.interests = interests?.split(",") || user.interests;
 
     await user.save();
@@ -153,9 +207,18 @@ const updateUser = async (req, res) => {
       message: "User updated successfully",
       user: {
         id: user._id,
-        name: user.name,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        userName: user.userName,
+        gender: user.gender,
+        age: user.age,
         email: user.email,
+        locality: user.locality,
+        avatar: user.avatar,
+        role: user.role,
         interests: user.interests,
+        attendedEvents: user.attendedEvents,
+        chats: user.chats,
       },
     });
   } catch (error) {

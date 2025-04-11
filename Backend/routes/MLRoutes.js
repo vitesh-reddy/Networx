@@ -1,23 +1,31 @@
+// MLRoutes.js
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const { StandardScaler, PCA } = require("scikitjs");
-const { KMeans } = require("scikitjs");
-const { NearestNeighbors } = require("scikitjs");
-const { OneHotEncoder } = require("scikitjs");
 const fs = require("fs");
 const csv = require("csv-parser");
 
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
+// Use TensorFlow.js with native bindings for speed
+const tf = require("@tensorflow/tfjs-node");
+const sk = require("scikitjs");
+sk.setBackend(tf);
 
-// Global variables to hold our models and data
+// Import scikitjs models
+const { StandardScaler, LinearRegression, PCA, KMeans, NearestNeighbors, OneHotEncoder } = sk;
+
+const router = express.Router();
+router.use(cors());
+router.use(bodyParser.json());
+
+// Global variables
 let df = [];
 let preprocessor = null;
 let pca = null;
 let nnModel = null;
 let kmeans = null;
+let scaler = null;
+let encoder = null;
 
 // Load and preprocess data
 async function loadAndPreprocess(filePath) {
@@ -31,7 +39,6 @@ async function loadAndPreprocess(filePath) {
         df = results;
 
         try {
-          // Define numerical and categorical features
           const numericalFeatures = [
             "Age",
             "Income",
@@ -50,44 +57,34 @@ async function loadAndPreprocess(filePath) {
             "Newsletter_Subscription",
           ];
 
-          // Extract numerical data
           const numericalData = df.map((user) =>
             numericalFeatures.map((feature) => parseFloat(user[feature]))
           );
-
-          // Extract categorical data
           const categoricalData = df.map((user) =>
             categoricalFeatures.map((feature) => user[feature])
           );
 
-          // Scale numerical data
-          const scaler = new StandardScaler();
-          const scaledNumerical = scaler.fitTransform(numericalData);
+          scaler = new StandardScaler();
+          const scaledNumerical = scaler.fitTransform(numericalData).arraySync();
 
-          // One-hot encode categorical data
-          const encoder = new OneHotEncoder();
-          const encodedCategorical = encoder.fitTransform(categoricalData);
+          encoder = new OneHotEncoder();
+          const encodedCategorical = encoder.fitTransform(categoricalData).arraySync();
 
-          // Combine features
           const X = scaledNumerical.map((row, i) => [
             ...row,
             ...encodedCategorical[i],
           ]);
 
-          // Apply PCA
           pca = new PCA({ nComponents: 0.95 });
-          const X_pca = pca.fitTransform(X);
+          const X_pca = pca.fitTransform(X).arraySync();
 
-          // Build Nearest Neighbors model
           nnModel = new NearestNeighbors({ nNeighbors: 11, metric: "cosine" });
           await nnModel.fit(X_pca);
 
-          // Cluster users
           const optimalClusters = await findOptimalClusters(X_pca);
           kmeans = new KMeans({ nClusters: optimalClusters });
           const clusters = await kmeans.fitPredict(X_pca);
 
-          // Add clusters to user data
           df.forEach((user, i) => {
             user.Cluster = clusters[i];
           });
@@ -118,126 +115,7 @@ async function findOptimalClusters(X_pca, maxClusters = 10) {
   return bestClusters;
 }
 
-// Health check endpoint
-app.get("/health", (req, res) => {
-  res.json({
-    status: nnModel ? "ready" : "not ready",
-    model_loaded: !!nnModel,
-    n_users: df.length,
-    n_features: pca ? pca.nComponents : 0,
-  });
-});
-
-// Find similar users endpoint
-app.post("/find_similar_users", async (req, res) => {
-  try {
-    const { user_id, n_similar = 5 } = req.body;
-
-    const userIndex = df.findIndex((user) => user.User_ID === user_id);
-    if (userIndex === -1) {
-      return res.status(404).json({ error: `User ${user_id} not found` });
-    }
-
-    // Transform the user data
-    const userData = df[userIndex];
-    const numericalFeatures = [
-      "Age",
-      "Income",
-      "Last_Login_Days_Ago",
-      "Purchase_Frequency",
-      "Average_Order_Value",
-      "Total_Spending",
-      "Time_Spent_on_Site_Minutes",
-      "Pages_Viewed",
-    ];
-    const categoricalFeatures = [
-      "Gender",
-      "Location",
-      "Interests",
-      "Product_Category_Preference",
-      "Newsletter_Subscription",
-    ];
-
-    const numericalData = numericalFeatures.map((feature) =>
-      parseFloat(userData[feature])
-    );
-    const categoricalData = categoricalFeatures.map(
-      (feature) => userData[feature]
-    );
-
-    // We'd need to implement the same preprocessing as in loadAndPreprocess
-    // For simplicity, let's assume we have a function to transform a single user
-    // In a real implementation, you'd want to properly scale/encode this data
-
-    const userTransformed = await transformUser(userData);
-    const userPca = pca.transform([userTransformed]);
-
-    const { distances, indices } = await nnModel.kneighbors(userPca, {
-      nNeighbors: n_similar + 1,
-    });
-
-    // Exclude the user themselves
-    const similarIndices = indices[0].slice(1);
-    const similarDistances = distances[0].slice(1);
-
-    const similarUsers = similarIndices.map((idx, i) => {
-      const user = { ...df[idx] };
-      user.Similarity_Score = 1 - similarDistances[i];
-      return {
-        User_ID: user.User_ID,
-        Age: parseInt(user.Age),
-        Gender: user.Gender,
-        Location: user.Location,
-        Interests: user.Interests,
-        Product_Category_Preference: user.Product_Category_Preference,
-        Similarity_Score: user.Similarity_Score,
-      };
-    });
-
-    res.json({ similar_users: similarUsers });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// Get cluster members endpoint
-app.post("/get_cluster_members", async (req, res) => {
-  try {
-    const { user_id } = req.body;
-
-    const user = df.find((user) => user.User_ID === user_id);
-    if (!user) {
-      return res.status(404).json({ error: `User ${user_id} not found` });
-    }
-
-    const cluster = user.Cluster;
-    const clusterMembers = df
-      .filter((u) => u.Cluster === cluster)
-      .map((member) => ({
-        User_ID: member.User_ID,
-        Age: parseInt(member.Age),
-        Gender: member.Gender,
-        Location: member.Location,
-        Interests: member.Interests,
-        Product_Category_Preference: member.Product_Category_Preference,
-      }));
-
-    res.json({ cluster_members: clusterMembers });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// Helper function to transform a single user (simplified)
 async function transformUser(user) {
-  // In a real implementation, you would:
-  // 1. Scale numerical features using the same scaler as before
-  // 2. One-hot encode categorical features using the same encoder
-  // 3. Combine the features
-
-  // For this example, we'll return a dummy transformation
   const numericalFeatures = [
     "Age",
     "Income",
@@ -248,23 +126,102 @@ async function transformUser(user) {
     "Time_Spent_on_Site_Minutes",
     "Pages_Viewed",
   ];
-  return numericalFeatures.map((feature) => parseFloat(user[feature]));
+  const categoricalFeatures = [
+    "Gender",
+    "Location",
+    "Interests",
+    "Product_Category_Preference",
+    "Newsletter_Subscription",
+  ];
+
+  const numValues = numericalFeatures.map((f) => parseFloat(user[f]));
+  const catValues = categoricalFeatures.map((f) => user[f]);
+
+  const scaled = scaler.transform([numValues]).arraySync()[0];
+  const encoded = encoder.transform([catValues]).arraySync()[0];
+
+  return [...scaled, ...encoded];
 }
 
-// Initialize the application
-async function initialize() {
+// Endpoints
+router.get("/health", (req, res) => {
+  res.json({
+    status: nnModel ? "ready" : "not ready",
+    model_loaded: !!nnModel,
+    n_users: df.length,
+    n_features: pca ? pca.nComponents : 0,
+  });
+});
+
+router.post("/find_similar_users", async (req, res) => {
+  try {
+    const { user_id, n_similar = 5 } = req.body;
+    const userIndex = df.findIndex((user) => user.User_ID === user_id);
+    if (userIndex === -1) {
+      return res.status(404).json({ error: `User ${user_id} not found` });
+    }
+
+    const userData = df[userIndex];
+    const transformed = await transformUser(userData);
+    const userPca = pca.transform([transformed]).arraySync();
+
+    const { distances, indices } = await nnModel.kneighbors(userPca, {
+      nNeighbors: n_similar + 1,
+    });
+
+    const similarIndices = indices[0].slice(1);
+    const similarDistances = distances[0].slice(1);
+
+    const similarUsers = similarIndices.map((idx, i) => {
+      const user = { ...df[idx] };
+      return {
+        User_ID: user.User_ID,
+        Age: parseInt(user.Age),
+        Gender: user.Gender,
+        Location: user.Location,
+        Interests: user.Interests,
+        Product_Category_Preference: user.Product_Category_Preference,
+        Similarity_Score: 1 - similarDistances[i],
+      };
+    });
+
+    res.json({ similar_users: similarUsers });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/get_cluster_members", (req, res) => {
+  const { user_id } = req.body;
+
+  const user = df.find((u) => u.User_ID === user_id);
+  if (!user) {
+    return res.status(404).json({ error: `User ${user_id} not found` });
+  }
+
+  const cluster = user.Cluster;
+  const members = df
+    .filter((u) => u.Cluster === cluster)
+    .map((member) => ({
+      User_ID: member.User_ID,
+      Age: parseInt(member.Age),
+      Gender: member.Gender,
+      Location: member.Location,
+      Interests: member.Interests,
+      Product_Category_Preference: member.Product_Category_Preference,
+    }));
+
+  res.json({ cluster_members: members });
+});
+
+async function initializeFastAPI() {
   try {
     await loadAndPreprocess("user_personalized_features.csv");
-    console.log("Model loaded successfully");
-
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  } catch (error) {
-    console.error("Failed to initialize:", error);
-    process.exit(1);
+    console.log("FastAPI module initialized.");
+  } catch (err) {
+    console.error("FastAPI init error:", err);
   }
 }
 
-initialize();
+module.exports = { fastapiRouter: router, initializeFastAPI };

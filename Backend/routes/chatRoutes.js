@@ -4,17 +4,76 @@ const {
   getUserChats,
   createMessage,
   getChatMessages,
+  createGroupChat,
+  removeParticipantsFromGroup,
+  addParticipantsToGroup,
+  updateChatAvatar,
 } = require("../api/chat");
 
 const chatRouter = express.Router();
 
 // Create a new chat
-chatRouter.post("/create", async (req, res) => {
+chatRouter.post("/", async (req, res) => {
   try {
-    const { isGroup, participants } = req.body;
+    const { name, participants } = req.body;
     const participantsArray = participants?.split(",");
 
-    const chat = await createChat(isGroup, participantsArray);
+    const chat = await createChat(name, participantsArray);
+    res.status(201).json(chat);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// create a new group chat
+chatRouter.post("/groupChat", async (req, res) => {
+  try {
+    const { name, participants } = req.body;
+    const participantsArray = participants?.split(",");
+
+    const chat = await createGroupChat(name, participantsArray);
+    res.status(201).json(chat);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// update chat avatar
+chatRouter.post("/avatar", async (req, res) => {
+  try {
+    const { chatId, avatar } = req.body;
+    const chat = await updateChatAvatar(chatId, avatar);
+    res.status(201).json(chat);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// add participants to group
+chatRouter.post("/groupChatParticipants", async (req, res) => {
+  try {
+    const { chatId, participants } = req.body;
+    const participantsArray = participants?.split(",");
+
+    const chat = await addParticipantsToGroup(
+      chatId,
+      participantsArray
+    );
+    res.status(201).json(chat);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+chatRouter.delete("/groupChatParticipants", async (req, res) => {
+  try {
+    const { chatId, participants } = req.body;
+    const participantsArray = participants?.split(",");
+
+    const chat = await removeParticipantsFromGroup(
+      chatId,
+      participantsArray
+    );
     res.status(201).json(chat);
   } catch (error) {
     res.status(400).json({ error: error.message });

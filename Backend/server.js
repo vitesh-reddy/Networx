@@ -4,16 +4,12 @@ const mongoose = require("mongoose");
 const morgan = require("morgan");
 const { userRouter } = require("./routes/userRoutes");
 const { chatRouter } = require("./routes/chatRoutes");
+// const { fastapiRouter, initializeFastAPI } = require("./routes/MLRoutes");
 
 console.clear();
 dotenv.config();
 
-const REACT_BASE_URI = process.env.REACT_BASE_URI;
-const cors = require("cors");
-const corsOptions = { origin: [REACT_BASE_URI] };
-
 const app = express();
-app.use(cors(corsOptions));
 app.use(morgan("dev"));
 app.use(express.json());
 
@@ -25,22 +21,14 @@ mongoose
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err);
   });
+// initializeFastAPI();
 
 const PORT = process.env.PORT || 3000;
 
 app.use("/api/user", userRouter);
 app.use("/api/chat", chatRouter);
+// app.use("/api/ML", fastapiRouter);
 
 const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-
-/*
-
-authentication
-user schema update  
-events collection
-chat implementation (individual and group)
-
-*/

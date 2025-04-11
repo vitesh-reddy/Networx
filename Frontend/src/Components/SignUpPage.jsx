@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Users } from "lucide-react";
@@ -13,18 +14,36 @@ const SignUpPage = () => {
     locality: "",
     password: "",
     interests: "",
+    avatar: null,
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value, files } = e.target;
+    if (name === "avatar") {
+      setFormData({
+        ...formData,
+        avatar: files[0], // Handle file input
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
+    const res = await axios.post("http://localhost:3000/api/user/register", formData, {
+      authentication: "bearer"
+    });
+    if (res.status === 200) {
+      alert("Registration successful");
+      window.location.href = "/login"; 
+    } else {
+      alert("Registration failed");
+    }
   };
 
   return (
@@ -168,10 +187,23 @@ const SignUpPage = () => {
                 type="text"
                 name="interests"
                 value={formData.interests}
-                onChange={handleChange}
+                onChange={handleChange}z
                 placeholder="e.g., photography, hiking, cooking"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Avatar
+              </label>
+              <input
+                type="file"
+                name="avatar"
+                accept="image/*"
+                onChange={handleChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               />
             </div>
 

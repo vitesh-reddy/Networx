@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
 const chatSchema = new mongoose.Schema({
+  name: { type: String, default: "" },
+  avatar: { type: String },
   isGroup: { type: Boolean, default: false },
   participants: [
     { type: mongoose.Schema.Types.ObjectId, ref: "User" },

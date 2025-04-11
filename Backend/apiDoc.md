@@ -1,51 +1,54 @@
-# User API Documentation
+# API Documentation
 
-This documentation outlines the endpoints for user management in the Epoch Networkx API.
+## User Routes
 
-## Base URL
+### 1. Register a new user
 
-```
-/api/users
-```
-
-## Endpoints
-
-### Register User
-
-- **URL:** `/register`
-- **Method:** `POST`
-- **Access:** Public
-- **Body:**
+- **Method:** POST
+- **Endpoint:** `/register`
+- **Request Body:**
 
 ```json
 {
-  "name": "string",
+  "firstName": "string",
+  "lastName": "string",
+  "userName": "string",
+  "gender": "string",
+  "age": "string",
   "email": "string",
+  "locality": "string",
+  "avatar": "string",
   "password": "string",
-  "interests": "string" // comma-separated values
+  "interests": "string (comma-separated)"
 }
 ```
 
-- **Success Response:** `201 Created`
+- **Response:**
 
 ```json
 {
-  "token": "JWT_TOKEN",
+  "token": "string",
   "user": {
     "id": "string",
-    "name": "string",
+    "firstName": "string",
+    "lastName": "string",
+    "userName": "string",
+    "gender": "string",
+    "age": "string",
     "email": "string",
+    "locality": "string",
+    "avatar": "string",
+    "role": "string",
     "interests": ["string"]
   }
 }
 ```
 
-### Login User
+### 2. Login user
 
-- **URL:** `/login`
-- **Method:** `POST`
-- **Access:** Public
-- **Body:**
+- **Method:** POST
+- **Endpoint:** `/login`
+- **Request Body:**
 
 ```json
 {
@@ -54,147 +57,336 @@ This documentation outlines the endpoints for user management in the Epoch Netwo
 }
 ```
 
-- **Success Response:** `200 OK`
+- **Response:**
 
 ```json
 {
-  "token": "JWT_TOKEN",
+  "token": "string",
   "user": {
     "id": "string",
-    "name": "string",
+    "firstName": "string",
+    "lastName": "string",
+    "userName": "string",
+    "gender": "string",
+    "age": "string",
     "email": "string",
-    "interests": ["string"]
+    "locality": "string",
+    "avatar": "string",
+    "role": "string",
+    "interests": ["string"],
+    "attendedEvents": ["string"],
+    "chats": ["string"]
   }
 }
 ```
 
-### Get All Users
+### 3. Get all users (Protected route)
 
-- **URL:** `/`
-- **Method:** `GET`
-- **Access:** Protected
-- **Headers:** `Authorization: Bearer <token>`
-- **Success Response:** `200 OK`
-
-### Get User by ID
-
-- **URL:** `/:id`
-- **Method:** `GET`
-- **Access:** Protected
-- **Headers:** `Authorization: Bearer <token>`
-- **Success Response:** `200 OK`
-
-### Update User
-
-- **URL:** `/:id`
-- **Method:** `PUT`
-- **Access:** Protected
-- **Headers:** `Authorization: Bearer <token>`
-- **Body:**
-
-```json
-{
-  "name": "string",
-  "email": "string",
-  "interests": "string" // comma-separated values
-}
-```
-
-- **Success Response:** `200 OK`
-
-### Delete User
-
-- **URL:** `/:id`
-- **Method:** `DELETE`
-- **Access:** Protected
-- **Headers:** `Authorization: Bearer <token>`
-- **Success Response:** `200 OK`
-
-## Error Responses
-
-```json
-{
-  "message": "error message",
-  "error": "detailed error info"
-}
-```
-
-Common error codes:
-
-- `400` - Bad Request
-- `401` - Unauthorized
-- `403` - Forbidden
-- `404` - Not Found
-- `500` - Server Error
-
-## Chat API Documentation
-
-This documentation outlines the endpoints for chat management in the Epoch Networkx API.
-
-## Base URL
-
-```
-/api/chats
-```
-
-## Endpoints
-
-### Create Chat
-
-- **URL:** `/create`
-- **Method:** `POST`
-- **Access:** Protected
-- **Body:**
-
-```json
-{
-  "isGroup": "boolean",
-  "participants": "string" // comma-separated user IDs
-}
-```
-
-- **Success Response:** `201 Created`
-
-```json
-{
-  "_id": "string",
-  "isGroup": "boolean",
-  "participants": ["string"],
-  "messages": []
-}
-```
-
-### Get User Chats
-
-- **URL:** `/user/:userId`
-- **Method:** `GET`
-- **Access:** Protected
-- **Headers:** `Authorization: Bearer <token>`
-- **Success Response:** `200 OK`
+- **Method:** GET
+- **Endpoint:** `/`
+- **Authentication:** Requires a valid JWT token in the `Authorization` header.
+- **Response:**
 
 ```json
 [
   {
-    "_id": "string",
-    "isGroup": "boolean",
-    "participants": [
-      {
-        "name": "string",
-        "email": "string"
-      }
-    ],
-    "messages": []
+    "id": "string",
+    "firstName": "string",
+    "lastName": "string",
+    "userName": "string",
+    "gender": "string",
+    "age": "string",
+    "email": "string",
+    "locality": "string",
+    "avatar": "string",
+    "role": "string",
+    "interests": ["string"],
+    "attendedEvents": ["string"],
+    "chats": ["string"]
   }
 ]
 ```
 
-### Create Message
+### 4. Get single user by ID (Protected route)
 
-- **URL:** `/message/:chatId`
-- **Method:** `POST`
-- **Access:** Protected
-- **Headers:** `Authorization: Bearer <token>`
-- **Body:**
+- **Method:** GET
+- **Endpoint:** `/:id`
+- **Authentication:** Requires a valid JWT token in the `Authorization` header.
+- **Response:**
+
+```json
+{
+  "id": "string",
+  "firstName": "string",
+  "lastName": "string",
+  "userName": "string",
+  "gender": "string",
+  "age": "string",
+  "email": "string",
+  "locality": "string",
+  "avatar": "string",
+  "role": "string",
+  "interests": ["string"],
+  "attendedEvents": ["string"],
+  "chats": ["string"]
+}
+```
+
+### 5. Update user (Protected route)
+
+- **Method:** PUT
+- **Endpoint:** `/:id`
+- **Authentication:** Requires a valid JWT token in the `Authorization` header.
+- **Request Body:**
+
+```json
+{
+  "firstName": "string",
+  "lastName": "string",
+  "userName": "string",
+  "gender": "string",
+  "age": "string",
+  "email": "string",
+  "locality": "string",
+  "avatar": "string",
+  "interests": "string (comma-separated)"
+}
+```
+
+- **Response:**
+
+```json
+{
+  "message": "User updated successfully",
+  "user": {
+    "id": "string",
+    "firstName": "string",
+    "lastName": "string",
+    "userName": "string",
+    "gender": "string",
+    "age": "string",
+    "email": "string",
+    "locality": "string",
+    "avatar": "string",
+    "role": "string",
+    "interests": ["string"],
+    "attendedEvents": ["string"],
+    "chats": ["string"]
+  }
+}
+```
+
+### 6. Delete user (Protected route)
+
+- **Method:** DELETE
+- **Endpoint:** `/:id`
+- **Authentication:** Requires a valid JWT token in the `Authorization` header.
+- **Response:**
+
+```json
+{
+  "message": "User deleted successfully"
+}
+```
+
+## Chat Routes
+
+### 1. Create a new chat
+
+- **Method:** POST
+- **Endpoint:** `/`
+- **Request Body:**
+
+```json
+{
+  "name": "string",
+  "participants": "string (comma-separated user IDs)"
+}
+```
+
+- **Response:**
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "isGroup": boolean,
+  "participants": ["string"],
+  "messages": [
+    {
+      "sender": "string",
+      "content": "string",
+      "timestamp": "string"
+    }
+  ],
+  "avatar": "string"
+}
+```
+
+### 2. Create a new group chat
+
+- **Method:** POST
+- **Endpoint:** `/groupChat`
+- **Request Body:**
+
+```json
+{
+  "name": "string",
+  "participants": "string (comma-separated user IDs)"
+}
+```
+
+- **Response:**
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "isGroup": boolean,
+  "participants": ["string"],
+  "messages": [
+    {
+      "sender": "string",
+      "content": "string",
+      "timestamp": "string"
+    }
+  ],
+  "avatar": "string"
+}
+```
+
+### 3. Update chat avatar
+
+- **Method:** POST
+- **Endpoint:** `/avatar`
+- **Request Body:**
+
+```json
+{
+  "chatId": "string",
+  "avatar": "string"
+}
+```
+
+- **Response:**
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "isGroup": boolean,
+  "participants": ["string"],
+  "messages": [
+    {
+      "sender": "string",
+      "content": "string",
+      "timestamp": "string"
+    }
+  ],
+  "avatar": "string"
+}
+```
+
+### 4. Add participants to group
+
+- **Method:** POST
+- **Endpoint:** `/groupChatParticipants`
+- **Request Body:**
+
+```json
+{
+  "chatId": "string",
+  "participants": "string (comma-separated user IDs)"
+}
+```
+
+- **Response:**
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "isGroup": boolean,
+  "participants": ["string"],
+  "messages": [
+    {
+      "sender": "string",
+      "content": "string",
+      "timestamp": "string"
+    }
+  ],
+  "avatar": "string"
+}
+```
+
+### 5. Remove participants from group
+
+- **Method:** DELETE
+- **Endpoint:** `/groupChatParticipants`
+- **Request Body:**
+
+```json
+{
+  "chatId": "string",
+  "participants": "string (comma-separated user IDs)"
+}
+```
+
+- **Response:**
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "isGroup": boolean,
+  "participants": ["string"],
+  "messages": [
+    {
+      "sender": "string",
+      "content": "string",
+      "timestamp": "string"
+    }
+  ],
+  "avatar": "string"
+}
+```
+
+### 6. Get all chats for a user
+
+- **Method:** GET
+- **Endpoint:** `/user/:userId`
+- **Response:**
+
+```json
+[
+  {
+    "id": "string",
+    "name": "string",
+    "isGroup": boolean,
+    "participants": [
+      {
+        "id": "string",
+        "name": "string",
+        "email": "string"
+      }
+    ],
+    "messages": [
+      {
+        "sender": "string",
+        "content": "string",
+        "timestamp": "string"
+      }
+    ],
+    "avatar": "string"
+  }
+]
+```
+
+### 7. Create a new message in a chat
+
+- **Method:** POST
+- **Endpoint:** `/message/:chatId`
+- **Request Body:**
 
 ```json
 {
@@ -203,46 +395,32 @@ This documentation outlines the endpoints for chat management in the Epoch Netwo
 }
 ```
 
-- **Success Response:** `201 Created`
+- **Response:**
 
 ```json
 {
   "sender": "string",
   "content": "string",
-  "timestamp": "ISODate"
+  "timestamp": "string"
 }
 ```
 
-### Get Chat Messages
+### 8. Get all messages in a chat
 
-- **URL:** `/message/:chatId`
-- **Method:** `GET`
-- **Access:** Protected
-- **Headers:** `Authorization: Bearer <token>`
-- **Success Response:** `200 OK`
+- **Method:** GET
+- **Endpoint:** `/message/:chatId`
+- **Response:**
 
 ```json
 [
   {
     "sender": "string",
     "content": "string",
-    "timestamp": "ISODate"
+    "timestamp": "string"
   }
 ]
 ```
 
-## Error Responses
-
-```json
-{
-  "error": "error message"
-}
 ```
 
-Common error codes:
-
-- `400` - Bad Request
-- `401` - Unauthorized
-- `403` - Forbidden
-- `404` - Not Found
-- `500` - Server Error
+```
