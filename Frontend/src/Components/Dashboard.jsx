@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import ConnectionsCard from "./ConnectionsCard";
+import mockEvents from "../../public/mockEvents";
+import mockConnections from "../../public/mockConnections";
 import {
   MessageSquare,
   Bell,
@@ -10,47 +12,17 @@ import {
   PlusCircle,
   Users,
 } from "lucide-react";
-import Connections from "./ConnectionsCard";
 
 const Dashboard = () => {
-  const [events, setEvents] = useState([
-    {
-      id: 1,
-      title: "Photography Workshop",
-      date: "2024-03-25",
-      interests: ["photography", "art"],
-      location: "Downtown Studio",
-    },
-    {
-      id: 2,
-      title: "Hiking Meetup",
-      date: "2024-03-27",
-      interests: ["hiking", "outdoors"],
-      location: "Mountain Trail",
-    },
-  ]);
+  const [events, setEvents] = useState(mockEvents);
 
   const [showFilter, setShowFilter] = useState(false);
 
 
-  const [connections, setConnections] = useState([
-    {
-      id: 1,
-      name: "Vitesh",
-      interests: ["photography", "travel"],
-      avatar:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
-    },
-    {
-      id: 2,
-      name: "Balaji",
-      interests: ["hiking", "photography"],
-      avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
-    },
-  ]);
+  const [connections, setConnections] = useState(mockConnections);
 
   const fetchAllUsers = async () => {
+    // await axios.get()
     const token = "YOUR_AUTH_TOKEN"; // Replace with actual token
     try {
       const res = await axios.get("http://localhost:3000/api/user/", {

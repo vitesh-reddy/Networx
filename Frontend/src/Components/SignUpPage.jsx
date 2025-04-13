@@ -14,35 +14,32 @@ const SignUpPage = () => {
     locality: "",
     password: "",
     interests: "",
-    avatar: null,
+    avatar: "",
   });
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "avatar") {
-      setFormData({
-        ...formData,
-        avatar: files[0], // Handle file input
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
-    const res = await axios.post("http://localhost:3000/api/user/register", formData, {
-      authentication: "bearer"
-    });
-    if (res.status === 200) {
-      alert("Registration successful");
-      window.location.href = "/login"; 
-    } else {
-      alert("Registration failed");
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/api/user/register",
+        formData
+      );
+      if (res.status === 201) {
+        alert("Registration successful");
+        window.location.href = "/login";
+      } else alert("Registration failed");
+    } catch (error) {
+      console.error("Error during registration:", error);
+      alert("An error occurred. Please try again.");
     }
   };
 
@@ -187,7 +184,7 @@ const SignUpPage = () => {
                 type="text"
                 name="interests"
                 value={formData.interests}
-                onChange={handleChange}z
+                onChange={handleChange}
                 placeholder="e.g., photography, hiking, cooking"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 required
@@ -196,13 +193,14 @@ const SignUpPage = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Avatar
+                Avatar URL
               </label>
               <input
-                type="file"
+                type="url"
                 name="avatar"
-                accept="image/*"
+                value={formData.avatar}
                 onChange={handleChange}
+                placeholder="Enter avatar image URL"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               />
             </div>

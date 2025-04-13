@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
-  console.log("Registering user", req.body);
   try {
     const {
       firstName,
@@ -18,24 +17,19 @@ const register = async (req, res) => {
       interests,
     } = req.body;
 
-    const interestsArray = interests?.split(",");
-    console.clear();
-    console.log("interestsArray", interestsArray);
-    // Check if user already exists
+    const interestsArray = interests?.split(", ");
     let user = await User.findOne({ email });
     if (user) {
-      return res
-        .status(400)
-        .json({ message: "User already exists" });
+      return res.status(400).json({ message: "User already exists" });
     }
 
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-  console.log("hashing done");
-  // Create new user
-  user = new User({
-    firstName,
+
+    // Create new user
+    user = new User({
+      firstName,
       lastName,
       userName,
       gender,
@@ -46,19 +40,22 @@ const register = async (req, res) => {
       password: hashedPassword,
       interests: interestsArray,
     });
-    
-    console.log("saving...");
+
     const ress = await user.save();
-    console.log(ress);
-    
+
     // Create JWT token
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
-    console.log("token genre...");
-    
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
     res.status(201).json({
       token,
       user: {
@@ -76,9 +73,7 @@ const register = async (req, res) => {
       },
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -89,20 +84,13 @@ const login = async (req, res) => {
     // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res
-        .status(400)
-        .json({ message: "User with Email not Found!" });
+      return res.status(400).json({ message: "User with Email not Found!" });
     }
 
     // Verify password
-    const isMatch = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res
-        .status(400)
-        .json({ message: "Invalid Password" });
+      return res.status(400).json({ message: "Invalid Password" });
     }
 
     // Create JWT token
@@ -131,36 +119,39 @@ const login = async (req, res) => {
       },
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
+const getUserData = (req, res) => {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ error: "No token found" });
+
+  try {
+    const user = jwt.verify(token, SECRET_KEY);
+    res.json({ message: "Protected content", user });
+  } catch (err) {
+    res.status(403).json({ error: "Invalid token" });
+  }
+};
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select("-password");
     res.json(users);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
 const getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select(
-      "-password"
-    );
+    const user = await User.findById(req.params.id).select("-password");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
     res.json(user);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -200,7 +191,7 @@ const updateUser = async (req, res) => {
     user.email = email || user.email;
     user.locality = locality || user.locality;
     user.avatar = avatar || user.avatar;
-    user.interests = interests?.split(",") || user.interests;
+    user.interests = interests?.split(", ") || user.interests;
 
     await user.save();
 
@@ -223,9 +214,7 @@ const updateUser = async (req, res) => {
       },
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -246,9 +235,7 @@ const deleteUser = async (req, res) => {
     await user.deleteOne();
     res.json({ message: "User deleted successfully" });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -259,4 +246,5 @@ module.exports = {
   getUserById,
   updateUser,
   deleteUser,
+  getUserData
 };

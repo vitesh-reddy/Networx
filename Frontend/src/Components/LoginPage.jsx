@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { Users } from "lucide-react";
+import axios from "axios";
+import { UserContext } from "../Store/userContext";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -15,9 +17,23 @@ const LoginPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
+    await axios
+      .post("http://localhost:3000/api/user/login", formData)
+      .then((res) => {
+        if (res.status === 200) {
+          const userData = res.data.user;
+          const {setUserData} = useContext(UserContext);
+          setUserData({ ...userData, token: res.data.token });
+          window.location.href = "/dashboard";
+        } else alert("Login failed");
+      })
+      .catch((error) => {
+        console.error("Error during login:", error);
+        alert("An error occurred. Please try again.");
+      });
   };
 
   return (

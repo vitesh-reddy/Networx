@@ -7,6 +7,7 @@ const {
   getUserById,
   updateUser,
   deleteUser,
+  getUserData,
 } = require("../api/user");
 
 const userRouter = express.Router();
@@ -15,6 +16,9 @@ const userRouter = express.Router();
 userRouter.post("/register", register);
 // Login user
 userRouter.post("/login", login);
+
+userRouter.get('/protected', getUserData);
+
 
 userRouter.use(verifyToken);
 
