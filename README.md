@@ -37,6 +37,13 @@ Frontend/
 
 ## Installation
 
+### Clone the repository:
+
+   ```bash
+   git clone https://github.com/vitesh-reddy/Networx.git
+   cd Networx
+   ```
+
 ### Backend
 
 1. Navigate to the backend directory:
