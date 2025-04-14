@@ -2,6 +2,8 @@
 
 Networx is a platform designed to facilitate networking at events, allowing participants to discover and connect with others based on mutual interests.
 
+> 🚧 **This project is currently under development. Frontend and backend integration is still in progress. Stay tuned for updates.**
+
 ## Features
 
 - User authentication and profile management.
